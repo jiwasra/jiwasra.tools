@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mental Health Check Up — Jiwasra.id</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --cream:#FAF6F0;
+    --card:#FFFFFF;
+    --sage:#6E9B8C;
+    --sage-dark:#527A6D;
+    --rust:#A15C38;
+    --ink:#4A3B34;
+    --ink-soft:#8A7C71;
+    --line:#E7DFD4;
+    --danger:#B5493A;
+    --danger-bg:#FBEEEC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', -apple-system, sans-serif;
+    min-height:100vh;
+    padding:40px 16px 80px 16px;
+  }
+  .wrap{max-width:680px; margin:0 auto;}
+  .wrap.wide{max-width:960px;}
+  .brand{
+    display:flex; align-items:center; gap:8px;
+    font-size:14px; color:var(--ink-soft); margin-bottom:24px;
+  }
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--rust);}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:36px 34px;
+  }
+  @media (max-width:520px){ .card{padding:24px 20px;} }
+  h1{
+    font-family:'Source Serif 4', Georgia, serif;
+    font-weight:600;
+    font-size:28px;
+    color:var(--sage-dark);
+    margin:0 0 12px 0;
+  }
+  .lede{font-size:15px; line-height:1.65; color:var(--ink-soft); margin:0 0 24px 0;}
+  label{display:block; font-size:13.5px; color:var(--ink); margin-bottom:6px; font-weight:500;}
+  input[type=text], input[type=number], select{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:2px;
+    font-family:inherit; font-size:14.5px; margin-bottom:18px; background:#fff; color:var(--ink);
+  }
+  input:focus, select:focus, textarea:focus{outline:none; border-color:var(--sage);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 16px;}
+  @media (max-width:480px){ .grid2{grid-template-columns:1fr;} }
+
+  .scale-legend{
+    background:#F5F1E9; border:1px solid var(--line); border-radius:2px;
+    padding:14px 16px; font-size:13px; line-height:1.7; color:var(--ink-soft); margin-bottom:28px;
+  }
+  .scale-legend b{color:var(--ink);}
+
+  .item{
+    padding:18px 0; border-bottom:1px solid var(--line);
+  }
+  .item:last-of-type{border-bottom:none;}
+  .item-num{font-size:12.5px; color:var(--rust); margin-bottom:6px; font-weight:600;}
+  .item-text{font-size:15.5px; line-height:1.5; margin-bottom:12px;}
+  .opts{display:flex; gap:8px; flex-wrap:wrap;}
+  .opt{
+    flex:1; min-width:120px;
+    border:1px solid var(--line); border-radius:2px; padding:9px 10px;
+    font-size:12.5px; text-align:center; cursor:pointer; color:var(--ink-soft);
+    transition:all .12s ease;
+  }
+  .opt:hover{border-color:var(--sage);}
+  .opt.selected{background:var(--sage); border-color:var(--sage); color:#fff; font-weight:500;}
+  .opt input{display:none;}
+
+  .btn{
+    font-family:inherit; font-size:15px; border:none; border-radius:2px;
+    padding:13px 28px; cursor:pointer;
+  }
+  .btn-primary{background:var(--sage-dark); color:#fff;}
+  .btn-primary:hover:not(:disabled){background:#436258;}
+  .btn-primary:disabled{background:#CFC8BC; color:#8A7C71; cursor:not-allowed;}
+  .btn-secondary{background:transparent; border:1px solid var(--sage-dark); color:var(--sage-dark);}
+  .btn-wa{background:#25D366; color:#fff; font-weight:500;}
+  .btn-wa:hover{background:#1ebe5a;}
+  .btn-danger{background:transparent; border:1px solid var(--danger); color:var(--danger); font-size:12.5px; padding:6px 12px;}
+
+  .progress-note{font-size:13px; color:var(--ink-soft); margin-bottom:10px;}
+  .unanswered{border-color:var(--danger) !important;}
+
+  .thanks-icon{font-size:40px; margin-bottom:8px;}
+
+  /* admin */
+  .login-box{max-width:380px; margin:80px auto 0 auto;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th, td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
+  th{color:var(--ink-soft); font-weight:500; font-size:12.5px;}
+  .sev-tag{padding:2px 8px; border-radius:10px; font-size:11.5px; font-weight:500; display:inline-block;}
+  .sev-normal{background:#E7F1EC; color:#3C6E56;}
+  .sev-ringan{background:#FBF3D9; color:#8A6D1F;}
+  .sev-sedang{background:#FBE6D3; color:#9C5A20;}
+  .sev-berat{background:#FBDCD3; color:#A3402A;}
+  .sev-sangatberat{background:#F5D3D3; color:#A32A2A;}
+  .toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;}
+  .caution{
+    background:var(--danger-bg); border:1px solid #E3B7AC; color:#8A362C;
+    padding:12px 14px; border-radius:2px; font-size:12.5px; line-height:1.5; margin-bottom:20px;
+  }
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(74,59,52,0.45);
+    display:flex; align-items:center; justify-content:center; padding:20px; z-index:10;
+  }
+  .modal{
+    background:#fff; max-width:600px; width:100%; max-height:80vh; overflow-y:auto;
+    border-radius:3px; padding:28px;
+  }
+  .modal h3{font-family:'Source Serif 4', serif; color:var(--sage-dark); margin-top:0;}
+  .modal .qa{font-size:13.5px; margin-bottom:10px; line-height:1.5; padding-bottom:10px; border-bottom:1px solid var(--line);}
+  .modal .qa b{color:var(--rust); display:block; font-size:11.5px; margin-bottom:2px;}
+  .empty-state{text-align:center; padding:60px 20px; color:var(--ink-soft); font-size:14px;}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="brand"><div class="dot"></div>jiwasra.id — Ruang Konsultasi Psikolog</div>
+  <div id="app"></div>
+</div>
+
+<script>
+/* ===================== DATA: DASS-42 ITEMS ===================== */
+const ITEMS = [
+  [1,'S','Saya merasa bahwa diri saya menjadi marah karena hal-hal sepele.'],
+  [2,'A','Saya merasa bibir saya sering kering.'],
+  [3,'D','Saya sama sekali tidak dapat merasakan perasaan positif.'],
+  [4,'A','Saya mengalami kesulitan bernafas (misalnya: seringkali terengah-engah atau tidak dapat bernafas padahal tidak melakukan aktivitas fisik sebelumnya).'],
+  [5,'D','Saya sepertinya tidak kuat lagi untuk melakukan suatu kegiatan.'],
+  [6,'S','Saya cenderung bereaksi berlebihan terhadap suatu situasi.'],
+  [7,'A','Saya merasa goyah (misalnya, kaki terasa mau copot).'],
+  [8,'S','Saya merasa sulit untuk bersantai.'],
+  [9,'A','Saya menemukan diri saya berada dalam situasi yang membuat saya merasa sangat cemas dan saya akan merasa sangat lega jika semua ini berakhir.'],
+  [10,'D','Saya merasa tidak ada hal yang dapat diharapkan di masa depan.'],
+  [11,'S','Saya menemukan diri saya mudah merasa kesal.'],
+  [12,'S','Saya merasa telah menghabiskan banyak energi untuk merasa cemas.'],
+  [13,'D','Saya merasa sedih dan tertekan.'],
+  [14,'S','Saya menemukan diri saya menjadi tidak sabar mengalami penundaan (misalnya: kemacetan atau menunggu sesuatu).'],
+  [15,'A','Saya merasa lemas seperti mau pingsan.'],
+  [16,'D','Saya merasa saya kehilangan minat akan segala hal.'],
+  [17,'D','Saya merasa bahwa saya tidak berharga sebagai seorang manusia.'],
+  [18,'S','Saya merasa bahwa saya mudah tersinggung.'],
+  [19,'A','Saya berkeringat secara berlebihan (misalnya: tangan berkeringat), padahal temperatur tidak panas atau tidak melakukan aktivitas fisik sebelumnya.'],
+  [20,'A','Saya merasa takut tanpa alasan yang jelas.'],
+  [21,'D','Saya merasa bahwa hidup tidak bermanfaat.'],
+  [22,'S','Saya merasa sulit untuk beristirahat.'],
+  [23,'A','Saya mengalami kesulitan dalam menelan.'],
+  [24,'D','Saya tidak dapat merasakan kenikmatan dari berbagai hal yang saya lakukan.'],
+  [25,'A','Saya menyadari kegiatan jantung, walaupun saya tidak sehabis melakukan aktivitas fisik (misalnya: merasa detak jantung meningkat atau melemah).'],
+  [26,'D','Saya merasa putus asa dan sedih.'],
+  [27,'S','Saya merasa bahwa saya sangat mudah marah.'],
+  [28,'A','Saya merasa saya hampir panik.'],
+  [29,'S','Saya merasa sulit untuk tenang setelah sesuatu membuat saya kesal.'],
+  [30,'A','Saya takut bahwa saya akan \'terhambat\' oleh tugas-tugas sepele yang tidak biasa saya lakukan.'],
+  [31,'D','Saya tidak merasa antusias dalam hal apapun.'],
+  [32,'S','Saya sulit untuk sabar dalam menghadapi gangguan terhadap hal yang sedang saya lakukan.'],
+  [33,'S','Saya sedang merasa gelisah.'],
+  [34,'D','Saya merasa bahwa saya tidak berharga.'],
+  [35,'S','Saya tidak dapat memaklumi hal apapun yang menghalangi saya untuk menyelesaikan hal yang sedang saya lakukan.'],
+  [36,'A','Saya merasa sangat ketakutan.'],
+  [37,'D','Saya melihat tidak ada harapan untuk masa depan.'],
+  [38,'D','Saya merasa bahwa hidup tidak berarti.'],
+  [39,'S','Saya menemukan diri saya mudah gelisah.'],
+  [40,'A','Saya merasa khawatir dengan situasi dimana saya mungkin menjadi panik dan mempermalukan diri sendiri.'],
+  [41,'A','Saya merasa gemetar (misalnya pada tangan).'],
+  [42,'D','Saya merasa sulit untuk meningkatkan inisiatif dalam melakukan sesuatu.'],
+];
+const OPTS = [
+  [0,'Tidak sesuai sama sekali'],
+  [1,'Sedikit sesuai / kadang-kadang'],
+  [2,'Cukup sesuai / lumayan sering'],
+  [3,'Sangat sesuai / paling sering'],
+];
+const CUTOFFS = {
+  D:[[9,'Normal'],[13,'Ringan'],[20,'Sedang'],[27,'Berat'],[Infinity,'Sangat Berat']],
+  A:[[7,'Normal'],[9,'Ringan'],[14,'Sedang'],[19,'Berat'],[Infinity,'Sangat Berat']],
+  S:[[14,'Normal'],[18,'Ringan'],[25,'Sedang'],[33,'Berat'],[Infinity,'Sangat Berat']],
+};
+const LABEL_FULL = {D:'Depresi', A:'Kecemasan', S:'Stres'};
+const ADMIN_PASSCODE = "JiwasraBantuSesama"; // ganti sesuai kebutuhan Mbak Imelda
+const SCREENING_PASSWORD = "MulaiLagiSekarang"; // password halaman awal untuk klien
+const WA_NUMBER = "6282321811676"; // nomor WhatsApp tujuan konfirmasi
+const WA_TEMPLATE = "Halo Kak, Saya sudah mengisi MHCU lanjutan ya \u2728"; // template pesan konfirmasi
+
+/* ===================== KONFIGURASI BACKEND (Google Sheets) =====================
+   1. Ikuti langkah di file AppsScript_DASS42.gs.txt untuk membuat Web App URL.
+   2. Tempel URL Web App tersebut di bawah ini (ganti teks di dalam tanda kutip).
+   3. Pastikan ADMIN_KEY di file .gs sama persis dengan ADMIN_PASSCODE di atas.
+================================================================================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIauH0r-frL_P-lqxjXWOOBTPP5PtE7fpHuzugCwd6NtAsjSQnEL4gHiwr3LQ_9hKSVQ/exec";
+
+function classify(score, letter){
+  for(const [max,label] of CUTOFFS[letter]) if(score<=max) return label;
+}
+function sevClass(label){
+  return 'sev-' + label.toLowerCase().replace(/\s+/g,'');
+}
+function uid(){ return 'x'+Date.now()+Math.random().toString(36).slice(2,8); }
+
+/* ===================== APP STATE ===================== */
+const isAdmin = location.hash === '#admin';
+const app = document.getElementById('app');
+const wrapEl = document.getElementById('wrap');
+
+let answers = {}; // item number -> value
+let identity = {};
+
+/* ===================== CLIENT FLOW ===================== */
+function renderPasswordGate(){
+  wrapEl.classList.remove('wide');
+  app.innerHTML = `
+    <div class="card login-box">
+      <h1>Mental Health Check Up</h1>
+      <p class="lede">Silakan masukkan password yang telah diberikan untuk memulai pengisian.</p>
+      <label>Masukkan Password</label>
+      <input type="text" id="screeningPassInput" placeholder="Masukkan password di sini">
+      <button class="btn btn-primary" id="screeningPassBtn">Mulai</button>
+      <div id="screeningPassError" style="color:var(--danger); font-size:13px; margin-top:10px;"></div>
+    </div>
+  `;
+  const submit = () => {
+    if(document.getElementById('screeningPassInput').value === SCREENING_PASSWORD){
+      renderIntro();
+    }else{
+      document.getElementById('screeningPassError').textContent = 'Password salah. Silakan hubungi admin untuk mendapatkan password yang benar.';
+    }
+  };
+  document.getElementById('screeningPassBtn').onclick = submit;
+  document.getElementById('screeningPassInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') submit();
+  });
+}
+
+function renderIntro(){
+  wrapEl.classList.remove('wide');
+  app.innerHTML = `
+    <div class="card">
+      <h1>Mental Health Check Up</h1>
+      <p class="lede">Kuesioner ini membantu memetakan tingkat gejala depresi, kecemasan, dan stres yang kamu alami selama satu minggu terakhir. Isian ini bersifat rahasia dan akan digunakan oleh psikolog untuk sesi konsultasimu.</p>
+      <label>Nama Lengkap</label>
+      <input type="text" id="f_nama" placeholder="Nama sesuai identitas">
+      <div class="grid2">
+        <div>
+          <label>Usia</label>
+          <input type="number" id="f_usia" placeholder="Contoh: 27" min="10" max="100">
+        </div>
+        <div>
+          <label>Jenis Kelamin</label>
+          <select id="f_jk">
+            <option value="">Pilih</option>
+            <option>Perempuan</option>
+            <option>Laki-laki</option>
+          </select>
+        </div>
+      </div>
+      <label>No. WhatsApp (opsional)</label>
+      <input type="text" id="f_wa" placeholder="08xxxxxxxxxx">
+      <button class="btn btn-primary" id="startBtn" style="margin-top:8px;">Mulai Isi Kuesioner</button>
+    </div>
+  `;
+  document.getElementById('startBtn').onclick = () => {
+    const nama = document.getElementById('f_nama').value.trim();
+    const usia = document.getElementById('f_usia').value.trim();
+    const jk = document.getElementById('f_jk').value;
+    if(!nama || !usia || !jk){
+      alert('Mohon lengkapi Nama, Usia, dan Jenis Kelamin terlebih dahulu.');
+      return;
+    }
+    identity = {
+      nama, usia, jk,
+      wa: document.getElementById('f_wa').value.trim(),
+      tanggal: new Date().toISOString()
+    };
+    renderQuestionnaire();
+  };
+}
+
+function renderQuestionnaire(){
+  const itemsHtml = ITEMS.map(([num, letter, text]) => `
+    <div class="item" id="item_${num}">
+      <div class="item-num">Pernyataan ${num}</div>
+      <div class="item-text">${text}</div>
+      <div class="opts" data-num="${num}">
+        ${OPTS.map(([val,label]) => `
+          <label class="opt" data-val="${val}">
+            <input type="radio" name="q${num}" value="${val}">
+            ${label}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  app.innerHTML = `
+    <div class="card">
+      <h1>Mental Health Check Up</h1>
+      <div class="scale-legend">
+        Pilih seberapa sesuai tiap pernyataan dengan kondisimu selama <b>satu minggu terakhir</b>. Tidak ada jawaban benar atau salah.
+      </div>
+      ${itemsHtml}
+      <div class="progress-note" id="progressNote">0 dari 42 pernyataan terisi.</div>
+      <button class="btn btn-primary" id="submitBtn" disabled style="margin-top:10px;">Kirim Jawaban</button>
+    </div>
+  `;
+
+  document.querySelectorAll('.opts').forEach(optsEl => {
+    const num = optsEl.dataset.num;
+    optsEl.querySelectorAll('.opt').forEach(optEl => {
+      optEl.addEventListener('click', () => {
+        answers[num] = parseInt(optEl.dataset.val);
+        optsEl.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+        optEl.classList.add('selected');
+        document.getElementById(`item_${num}`).classList.remove('unanswered');
+        updateProgress();
+      });
+    });
+  });
+
+  document.getElementById('submitBtn').onclick = handleSubmit;
+  updateProgress();
+}
+
+function updateProgress(){
+  const count = Object.keys(answers).length;
+  document.getElementById('progressNote').textContent = `${count} dari 42 pernyataan terisi.`;
+  document.getElementById('submitBtn').disabled = count < 42;
+}
+
+async function handleSubmit(){
+  if(Object.keys(answers).length < 42){
+    const missing = ITEMS.map(([n])=>n).find(n => !(n in answers));
+    if(missing){
+      document.getElementById(`item_${missing}`).classList.add('unanswered');
+      document.getElementById(`item_${missing}`).scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    return;
+  }
+
+  const scores = {D:0, A:0, S:0};
+  ITEMS.forEach(([num, letter]) => { scores[letter] += answers[num]; });
+  const severity = {
+    D: classify(scores.D,'D'),
+    A: classify(scores.A,'A'),
+    S: classify(scores.S,'S'),
+  };
+
+  const record = {
+    id: uid(),
+    ...identity,
+    answers,
+    scores,
+    severity
+  };
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Mengirim...';
+
+  try{
+    if(SCRIPT_URL.includes('PASTE_URL')){
+      throw new Error('SCRIPT_URL belum dikonfigurasi');
+    }
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify(record)
+    });
+    renderThanks();
+  }catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Kirim Jawaban';
+    alert('Gagal mengirim jawaban. Periksa koneksi internet lalu coba lagi, atau hubungi admin (backend belum tersambung).');
+  }
+}
+
+function renderThanks(){
+  const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_TEMPLATE)}`;
+  app.innerHTML = `
+    <div class="card" style="text-align:center;">
+      <div class="thanks-icon">🌿</div>
+      <h1>Terima kasih</h1>
+      <p class="lede">Jawabanmu sudah kami terima. Hasilnya akan ditinjau dan dibahas bersama psikolog pada sesi konsultasimu.</p>
+      <p class="lede" style="margin-bottom:14px;">Langkah terakhir, mohon kirimkan konfirmasi berikut ke WhatsApp kami:</p>
+      <a class="btn btn-wa" href="${waLink}" target="_blank" style="display:inline-block; text-decoration:none;">💬 Kirim Konfirmasi ke WhatsApp</a>
+    </div>
+  `;
+}
+
+/* ===================== ADMIN FLOW ===================== */
+function renderAdminLogin(){
+  wrapEl.classList.remove('wide');
+  app.innerHTML = `
+    <div class="card login-box">
+      <h1>Rekap Data (Admin)</h1>
+      <p class="lede">Halaman ini hanya untuk psikolog. Masukkan kode akses.</p>
+      <input type="text" id="passInput" placeholder="Kode akses">
+      <button class="btn btn-primary" id="loginBtn">Masuk</button>
+      <div id="loginError" style="color:var(--danger); font-size:13px; margin-top:10px;"></div>
+    </div>
+  `;
+  document.getElementById('loginBtn').onclick = () => {
+    if(document.getElementById('passInput').value === ADMIN_PASSCODE){
+      renderAdminDashboard();
+    }else{
+      document.getElementById('loginError').textContent = 'Kode akses salah.';
+    }
+  };
+}
+
+async function loadAllSubmissions(){
+  if(SCRIPT_URL.includes('PASTE_URL')){
+    throw new Error('SCRIPT_URL belum dikonfigurasi');
+  }
+  const res = await fetch(`${SCRIPT_URL}?key=${encodeURIComponent(ADMIN_PASSCODE)}`);
+  const data = await res.json();
+  if(data.error) throw new Error(data.error);
+  const records = data.records || [];
+  records.forEach(r => { r.flag = (r.flag === true || r.flag === 'TRUE' || r.flag === 'true'); });
+  records.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+  return records;
+}
+
+function toCSV(records){
+  const header = ['Nama','Usia','Jenis Kelamin','WA','Tanggal',
+    'Skor Depresi','Kategori Depresi','Skor Kecemasan','Kategori Kecemasan','Skor Stres','Kategori Stres','Ditandai'];
+  const rows = records.map(r => [
+    r.nama, r.usia, r.jk, r.wa || '', new Date(r.tanggal).toLocaleString('id-ID'),
+    r.scores.D, r.severity.D, r.scores.A, r.severity.A, r.scores.S, r.severity.S, r.flag ? 'Ya' : 'Tidak'
+  ]);
+  const esc = v => `"${String(v).replace(/"/g,'""')}"`;
+  return [header, ...rows].map(row => row.map(esc).join(',')).join('\n');
+}
+
+let allRecords = [];
+let adminFilters = { search: '', date: '', flagOnly: false };
+
+function refocus(id){
+  const el = document.getElementById(id);
+  if(el){ el.focus(); const v = el.value; el.value = ''; el.value = v; }
+}
+
+function getFilteredRecords(){
+  return allRecords.filter(r => {
+    if(adminFilters.search && !String(r.nama || '').toLowerCase().includes(adminFilters.search.toLowerCase())) return false;
+    if(adminFilters.date){
+      const d = new Date(r.tanggal).toISOString().slice(0,10);
+      if(d !== adminFilters.date) return false;
+    }
+    if(adminFilters.flagOnly && !r.flag) return false;
+    return true;
+  });
+}
+
+async function renderAdminDashboard(){
+  wrapEl.classList.add('wide');
+  app.innerHTML = `<div class="card"><div class="empty-state">Memuat data...</div></div>`;
+
+  try{
+    allRecords = await loadAllSubmissions();
+  }catch(e){
+    app.innerHTML = `<div class="card"><div class="empty-state">Gagal memuat data. Muat ulang halaman.</div></div>`;
+    return;
+  }
+  renderAdminTable();
+}
+
+function renderAdminTable(){
+  const records = getFilteredRecords();
+  const flaggedCount = allRecords.filter(r => r.flag).length;
+
+  const rowsHtml = records.map(r => `
+    <tr>
+      <td>${r.nama}${r.flag ? ' <span class="sev-tag sev-berat">Ditandai</span>' : ''}</td>
+      <td>${r.usia}</td>
+      <td>${r.jk}</td>
+      <td>${new Date(r.tanggal).toLocaleDateString('id-ID')}</td>
+      <td><span class="sev-tag ${sevClass(r.severity.D)}">${r.scores.D} · ${r.severity.D}</span></td>
+      <td><span class="sev-tag ${sevClass(r.severity.A)}">${r.scores.A} · ${r.severity.A}</span></td>
+      <td><span class="sev-tag ${sevClass(r.severity.S)}">${r.scores.S} · ${r.severity.S}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-secondary" style="padding:6px 12px; font-size:12.5px;" onclick="showDetail('${r.id}')">Detail</button>
+        <button class="btn btn-secondary" style="padding:6px 12px; font-size:12.5px;" onclick="toggleFlag('${r.id}')">${r.flag ? 'Batal Tandai' : 'Tandai'}</button>
+        <button class="btn btn-danger" onclick="deleteRecord('${r.id}')">Hapus</button>
+      </td>
+    </tr>
+  `).join('');
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="caution">
+        Catatan kerahasiaan: data tersimpan di Google Sheets milikmu sendiri. Pastikan akses Spreadsheet dan akun Google-mu tetap terjaga (aktifkan verifikasi 2 langkah), dan sebaiknya arsipkan lalu hapus data lama secara berkala setelah dicatat di rekam medis resmi.
+      </div>
+      <div class="toolbar">
+        <h1 style="margin:0;">Rekap Hasil DASS-42 (${records.length}${records.length !== allRecords.length ? ' dari ' + allRecords.length : ''})</h1>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" id="exportBtn">Unduh CSV</button>
+          <button class="btn btn-secondary" id="logoutBtn">Keluar</button>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:18px;">
+        <input type="text" id="searchNama" placeholder="Cari berdasarkan nama..." value="${adminFilters.search}" style="flex:1; min-width:180px; margin-bottom:0;">
+        <input type="date" id="searchTanggal" value="${adminFilters.date}" style="margin-bottom:0;">
+        <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink-soft); white-space:nowrap;">
+          <input type="checkbox" id="flagOnlyChk" ${adminFilters.flagOnly ? 'checked' : ''} style="width:auto; margin:0;"> Ditandai saja (${flaggedCount})
+        </label>
+      </div>
+      ${records.length === 0 ? '<div class="empty-state">Tidak ada data yang cocok.</div>' : `
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr>
+          <th>Nama</th><th>Usia</th><th>JK</th><th>Tanggal</th>
+          <th>Depresi</th><th>Kecemasan</th><th>Stres</th><th></th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+      </div>`}
+    </div>
+    <div id="modalRoot"></div>
+  `;
+
+  window.__records = allRecords;
+
+  document.getElementById('exportBtn').onclick = () => {
+    const csv = toCSV(records);
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `dass42_rekap_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  document.getElementById('logoutBtn').onclick = () => { location.hash = ''; renderAdminLogin(); };
+  document.getElementById('searchNama').addEventListener('input', e => {
+    adminFilters.search = e.target.value;
+    renderAdminTable();
+    refocus('searchNama');
+  });
+  document.getElementById('searchTanggal').addEventListener('input', e => {
+    adminFilters.date = e.target.value;
+    renderAdminTable();
+  });
+  document.getElementById('flagOnlyChk').addEventListener('change', e => {
+    adminFilters.flagOnly = e.target.checked;
+    renderAdminTable();
+  });
+}
+
+window.showDetail = function(id){
+  const r = window.__records.find(x => x.id === id);
+  if(!r) return;
+  const qaHtml = ITEMS.map(([num, letter, text]) => `
+    <div class="qa">
+      <b>${num}. (${LABEL_FULL[letter]})</b>
+      ${text}<br>Jawaban: <b style="color:var(--sage-dark);">${r.answers[num]}</b> — ${OPTS[r.answers[num]][1]}
+    </div>
+  `).join('');
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="modal-overlay" id="overlay">
+      <div class="modal">
+        <h3>${r.nama}${r.flag ? ' <span class="sev-tag sev-berat">Ditandai</span>' : ''} — ${new Date(r.tanggal).toLocaleString('id-ID')}</h3>
+        <p style="font-size:13.5px; color:var(--ink-soft);">
+          Usia ${r.usia} · ${r.jk} ${r.wa ? '· WA: '+r.wa : ''}<br>
+          Depresi: ${r.scores.D} (${r.severity.D}) · Kecemasan: ${r.scores.A} (${r.severity.A}) · Stres: ${r.scores.S} (${r.severity.S})
+        </p>
+        <hr style="border:none; border-top:1px solid var(--line); margin:16px 0;">
+        ${qaHtml}
+        <button class="btn btn-secondary" id="closeModal" style="margin-top:10px;">Tutup</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('closeModal').onclick = () => document.getElementById('modalRoot').innerHTML = '';
+  document.getElementById('overlay').addEventListener('click', (e) => {
+    if(e.target.id === 'overlay') document.getElementById('modalRoot').innerHTML = '';
+  });
+};
+
+window.toggleFlag = async function(id){
+  const rec = allRecords.find(x => x.id === id);
+  if(!rec) return;
+  const newFlag = !rec.flag;
+  rec.flag = newFlag; // update tampilan dulu (optimistic)
+  renderAdminTable();
+  try{
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action: 'flag', id, flag: newFlag, key: ADMIN_PASSCODE })
+    });
+  }catch(e){
+    console.warn('Gagal menyimpan status tanda ke server (tanda tetap tampil untuk sesi ini):', e);
+  }
+};
+
+window.deleteRecord = async function(id){
+  if(!confirm('Hapus data ini secara permanen?')) return;
+  try{
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action: 'delete', id, key: ADMIN_PASSCODE })
+    });
+    renderAdminDashboard();
+  }catch(e){
+    alert('Gagal menghapus data.');
+  }
+};
+
+/* ===================== ENTRY ===================== */
+if(isAdmin){
+  renderAdminLogin();
+}else{
+  renderPasswordGate();
+}
+</script>
+</body>
+</html>
